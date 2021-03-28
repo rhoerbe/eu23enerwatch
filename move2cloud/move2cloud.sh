@@ -12,10 +12,15 @@ logdir='/var/log/rclone'
 
 
 rclone sync -v $localdir $remotedir > $logdir/move2cloud.log 2>&1
+now=$( date --iso-8601=seconds)
 if rclone check -v $localdir $remotedir >> $logdir/move2cloud.log 2>&1; then
   mv logs/thermos/ &localdir
   rclone copy -v $localdir $remotedir >> $logdir/move2cloud.log 2>&1
 else
-  echo "$HOSTNAME: rclone check with OneDrive failed" | sendmail rainer@hoerbe.at
+  echo "Subject: $HOSTNAME: rclone check with OneDrive failed at $now" | sendmail rainer@hoerbe.at
+  # system unit nullmailer does not work -> needs manual kick
+  /usr/sbin/nullmailer-send &
+  sleep 10
+  kill %1
   exit 1
 fi
