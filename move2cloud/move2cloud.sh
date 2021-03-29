@@ -2,25 +2,65 @@
 
 # 1. Sync transfer directory (rclone/eu23automation/xfer) to mirror the server side
 # 2. Check sameness and report error unless OK
-# 3. Move new log files to transfer directory
-# 4. Copy local directory to server
+# 3. Move new log files to staging directory
+# 4. Upload staging directory to cloud server
 # (Files will be archived on the server side after processing, next sync will delete them locally)
 
-localdir='onedrive:eu23automation/'
-remotedir='/home/r2h2/rclone/eu23automation/'
+sourcedir='/home/r2h2/logs/thermos'
+stagingdir='/home/r2h2/logstaging'
+archivedir='/home/r2h2/logarchive'
+localdir='onedrive:eu23automation'
+remotedir='/home/r2h2/rclone/eu23automation'
 logdir='/var/log/rclone'
+start=$( date --iso-8601=seconds)
 
 
-rclone sync -v $localdir $remotedir > $logdir/move2cloud.log 2>&1
-now=$( date --iso-8601=seconds)
-if rclone check -v $localdir $remotedir >> $logdir/move2cloud.log 2>&1; then
-  mv logs/thermos/ &localdir
-  rclone copy -v $localdir $remotedir >> $logdir/move2cloud.log 2>&1
-else
-  echo "Subject: $HOSTNAME: rclone check with OneDrive failed at $now" | sendmail rainer@hoerbe.at
+main () {
+  s1_sync_cloud || echo "$start rclone sync failed." >> $logdir/move2cloud.log; finalize
+  s2_sync_check || echo "$start rclone check failed." >> $logdir/move2cloud.log; finalize
+  s3_move_log_to_staging
+  s4_upload_staging_to_cloud || echo "$start rclone copy failed." >> $logdir/move2cloud.log; finalize
+  s5_move_staging_to_archive  # to be collected by logrotate
+}
+
+s1_sync_cloud() {
+  rclone sync -v $localdir/ $remotedir/ > $logdir/move2cloud.log 2>&1
+  return $?
+}
+
+
+s2_check_cloud() {
+  rclone check -v $localdir/ $remotedir/ > $logdir/move2cloud.log 2>&1
+  return $?
+}
+
+
+s3_move_log_to_staging() {
+  mkdir -p $stagingdir
+  mv $sourcedir/* $stagingdir/
+}
+
+
+s4_upload_staging_to_cloud() {
+  rclone copy -v $localdir/ $remotedir/ >> $logdir/move2cloud.log 2>&1
+  return $?
+}
+
+
+s5_move_staging_to_archive() {
+  mkdir -p $archivedir
+  mv $stagingdir/* $archivedir/
+}
+
+
+finalize() {
+  echo "Subject: $HOSTNAME: move2cloud.sh started at $now failed" | sendmail rainer@hoerbe.at
   # system unit nullmailer does not work -> needs manual kick
   /usr/sbin/nullmailer-send &
   sleep 10
   kill %1
   exit 1
-fi
+}
+
+
+main $@
