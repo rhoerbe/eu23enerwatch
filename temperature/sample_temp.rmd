@@ -8,6 +8,7 @@ Description=Sample temperatur sensors
 [Service]
 Type=simple
 ExecStart=/home/r2h2/eu23enerwatch/temperature/sample_temp.sh
+User=r2h2
 
 [Install]
 WantedBy=multi-user.target
