@@ -1,0 +1,13 @@
+# Example systemd unit file
+
+Crete this file in /etc/systemd/system/temp_sensors.service
+
+[Unit]
+Description=Sample temperatur sensors
+
+[Service]
+Type=simple
+ExecStart=/home/r2h2/eu23enerwatch/temperature/sample_temp.sh
+
+[Install]
+WantedBy=multi-user.target
