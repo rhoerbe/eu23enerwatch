@@ -3,6 +3,7 @@ Upload samples into database
 """
 
 import os
+import sys
 import psycopg2
 from pathlib import Path
 
@@ -12,7 +13,7 @@ import constants
 def main():
     password = os.environ['PG_PASSWD']
     conn = psycopg2.connect(host="dc.idn.local", dbname="eu23enerwatch", user="eu23enerwatch", password=password)
-    logdir = Path('data')
+    logdir = Path(sys.argv[1])
     for fpath in logdir.rglob('*'):
         if fpath.is_file() and not fpath.name.startswith('done_'):
             with open(fpath) as fd:

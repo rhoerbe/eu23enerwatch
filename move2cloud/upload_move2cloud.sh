@@ -43,7 +43,7 @@ s3_move_log_to_staging() {
 
 
 function s4_upload_to_database() {
-  ../upload2db/upload2db.sh
+  ../upload2db/upload2db.sh $stagingdir
 }
 
 
