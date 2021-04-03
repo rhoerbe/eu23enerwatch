@@ -12,6 +12,7 @@ function main() {
     local fn=$(date --iso-8601=minutes)
     fp=$logdirroot/$todaydir/$fn
     write_temp
+    rm $logdirroot/*    # remove empty regular files -> not found where created
     sleep $sampling_interval
   done
 }
