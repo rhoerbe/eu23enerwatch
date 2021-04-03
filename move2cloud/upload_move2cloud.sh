@@ -19,8 +19,9 @@ main () {
   s1_sync_cloud || echo "$start rclone sync failed." >> $logdir/move2cloud.log; finalize
   s2_sync_check || echo "$start rclone check failed." >> $logdir/move2cloud.log; finalize
   s3_move_log_to_staging
-  s4_upload_staging_to_cloud || echo "$start rclone copy failed." >> $logdir/move2cloud.log; finalize
-  s5_move_staging_to_archive  # to be collected by logrotate
+  s4_upload_to_database
+  s5_upload_staging_to_cloud || echo "$start rclone copy failed." >> $logdir/move2cloud.log; finalize
+  s6_move_staging_to_archive  # to be collected by logrotate
 }
 
 s1_sync_cloud() {
@@ -41,13 +42,18 @@ s3_move_log_to_staging() {
 }
 
 
-s4_upload_staging_to_cloud() {
+function s4_upload_to_database() {
+  ../upload2db/upload2db.sh
+}
+
+
+s5_upload_staging_to_cloud() {
   rclone copy -v $localdir/ $remotedir/ >> $logdir/move2cloud.log 2>&1
   return $?
 }
 
 
-s5_move_staging_to_archive() {
+s6_move_staging_to_archive() {
   mkdir -p $archivedir
   mv $stagingdir/* $archivedir/
 }

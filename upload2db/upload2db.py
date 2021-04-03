@@ -1,5 +1,5 @@
 """
-Aggregate samples into database
+Upload samples into database
 """
 
 import os
