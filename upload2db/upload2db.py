@@ -50,14 +50,14 @@ def write_db(cursor, sampletime: str, row_values: dict):
     ) 
     VALUES (
         '{sampletime_edited}',
-        {row_values['Kellerabluft']},
-        {row_values['Ofenvorlauf']},
-        {row_values['EGabluft']},
-        {row_values['Boiler']},
-        {row_values['Puffer']},
-        {row_values['OGabluft']},
-        {row_values['FBHvorlauf']},
-        {row_values['FBHruecklauf']}
+        {row_values.get('Kellerabluft', -99)},
+        {row_values.get('Ofenvorlauf', -99)},
+        {row_values.get('EGabluft', -99)},
+        {row_values.get('Boiler', -99)},
+        {row_values.get('Puffer', -99)},
+        {row_values.get('OGabluft', -99)},
+        {row_values.get('FBHvorlauf', -99)},
+        {row_values.get('FBHruecklauf', -99)}
     )
     """
     try:
