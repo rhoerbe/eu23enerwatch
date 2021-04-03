@@ -1,0 +1,4 @@
+#adafruit_dht
+#atexit
+#board
+psycopg2
