@@ -3,7 +3,7 @@
 Crete this file in /etc/systemd/system/temp_sensors.service
 
 [Unit]
-Description=Sample temperatur sensors
+Description=Sample temperature sensors
 
 [Service]
 Type=simple

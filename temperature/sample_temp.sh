@@ -18,11 +18,10 @@ function main() {
 
 
 function write_temp() {
-
   for x in $(ls  /sys/bus/w1/devices/ | grep 28); do 
-    echo "$x ""$(cat /sys/bus/w1/devices/w1_bus_master1/${x}/temperature)"  >> $fp
+    echo $(cat /sys/bus/w1/devices/w1_bus_master1/${x}/temperature) >> $fp
   done
-  printf "$fp created with " >> $lastlogfp
+  printf "$fp created with " > $lastlogfp
   stat --printf="%s" $fp  >> $lastlogfp
   printf " bytes\n" >> $lastlogfp
 }
