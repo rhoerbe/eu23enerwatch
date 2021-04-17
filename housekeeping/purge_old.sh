@@ -7,4 +7,6 @@ logdirroot='/home/r2h2/logs/thermos'
 # keep at least 3 month of data
 purgemonth=$(date --date 'now - 4 month' '+%Y-%m')
 
-rm -rf $logdirroot/${purgemonth}-*
+dirglob="$logdirroot/${purgemonth}-*"
+echo "deleting $dirglob"
+rm -rf $dirglob
