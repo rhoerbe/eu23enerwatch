@@ -1,4 +1,8 @@
 #adafruit_dht
 #atexit
 #board
+#python-dev
+#python-rpi.gpio
+paho-mqtt
 psycopg2
+

@@ -1,6 +1,6 @@
 # Example systemd unit file
 
-Crete this file in /etc/systemd/system/temp_sensors.service
+Create this file in /etc/systemd/system/temp_sensors.service
 
 [Unit]
 Description=Sample temperature sensors
