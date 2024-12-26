@@ -34,15 +34,13 @@ def main():
         p = sensor_root_path / sensor / 'temperature'
         temp_str = p.read_text().strip()
         temp = '{"temperature": ' + str(round(int(temp_str) / 1000, 1)) + '}'
-        topic = 'home/temperature/' + sensors_heatpump[sensor]
         try:
             topic = 'home/temperature/' + sensors_heatpump[sensor]
+            if args.verbose:
+                print(topic + "   " + temp)
+            client.publish(topic, temp)
         except KeyError:
             print(f"Sensor {sensor} not found, no message sent")
-            continue
-        if args.verbose:
-            print(topic + "   " + temp)
-        client.publish(topic, temp)
 
     parser = argparse.ArgumentParser(description="Get W1 values and sent MQTT messages with these values.")
     parser.add_argument("-v", "--verbose", help="Increase output verbosity", action="store_true")
