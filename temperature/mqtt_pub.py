@@ -41,7 +41,7 @@ def main():
     for sensor in sensors_ventilation.keys():
         p = sensor_root_path / sensor / 'temperature'
         temp_str = p.read_text().strip()
-        temp = '{"temperature": ' + round(int(temp_str) / 1000, 1) + '}'
+        temp = '{"temperature": ' + str(round(int(temp_str) / 1000, 1)) + '}'
         topic = 'home/temperature/' + sensors_heatpump[sensor]
         client.publish(topic, temp)
 
