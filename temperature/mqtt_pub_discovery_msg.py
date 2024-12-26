@@ -8,7 +8,7 @@ state_topic = "home/temperature"
 # Discovery message
 discovery_template = {
     "name": "placeholder sensor_id",
-    "state_topic": state_topic,
+    "state_topic": "placeholder state_topic",
     "unit_of_measurement": "°C",
     "value_template": "{{ value_json.temperature }}",
     "unique_id": "placeholder sensor_id",
@@ -20,11 +20,11 @@ discovery_template = {
     }
 }
 sensors_heatpump = (
-    't04-Holzofen_Ruecklauf',
+    't04-Holzofen_Rücklauf',
     't06-Boiler-oben',
     't07-Puffer-oben',
     't09-FBH-Vorlauf',
-    't10-FBH-Ruecklauf',
+    't10-FBH-Rücklauf',
 )
 sensors_air = (
     't01-Keller-Abluft',
@@ -39,13 +39,14 @@ def main():
     client.connect(broker_addr, broker_port, 60)
 
     # Publish discovery message for heatpump sensors
-    for sensor in sensors_heatpump:
+    for sensor in (sensors_heatpump + sensors_air):
         message = discovery_template.copy()
         message["name"] = sensor
+        message["state_topic"] = state_topic + "/" + sensor
         message["unique_id"] = "id_" + sensor
         message["device"]["identifiers"] = ["heatpump_temperatures"]
         message["device"]["name"] = "heatpump_temperatures"
-        client.publish("homeassistant/sensor/" + sensor + "/config", json.dumps(message), retain=True)
+        client.publish("homeassistant/sensor/" + sensor + "/config", json.dumps(message), retain=False)
 
 
 if __name__ == '__main__':
