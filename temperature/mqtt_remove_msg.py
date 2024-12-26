@@ -1,4 +1,4 @@
-import json
+import os
 import paho.mqtt.client as mqtt
 
 broker_addr = "10.4.4.17"
@@ -22,7 +22,12 @@ sensors_air = (
 
 def main():
     client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1, client_id="cloudberry")
-    client.username_pw_set("mqtt", "Crsm7.pvbwb9")
+    try:
+        password = os.environ['MQTT_PASSWORD']
+        userid = os.environ['MQTT_USERID']
+    except KeyError:
+        raise KeyError(f"Environment variable MQTT_PASSWORD or MQTT_USERID not found.")
+    client.username_pw_set(userid, password)
     client.connect(broker_addr, broker_port, 60)
     print ("connectd to broker")
     # Publish discovery message for heatpump sensors
