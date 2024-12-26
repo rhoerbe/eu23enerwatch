@@ -7,7 +7,7 @@ broker_port = 1883
 sensor_root_path = Path('/sys/bus/w1/devices/w1_bus_master1/')
 
 sensors_heatpump = {
-    '28-0119354f4ef8': 't04-Holzofen_Ruecklauf',
+    '28-0119354f4ef8': 't04-Holzofen_Rücklauf',
     '28-011935714abf': 't06-Boiler-oben',
     '28-01202251809c': 't07-Puffer-oben',
     '28-0120222c37ec': 't09-FBH-Vorlauf',
@@ -41,7 +41,7 @@ def main():
     for sensor in sensors_ventilation.keys():
         p = sensor_root_path / sensor / 'temperature'
         temp_str = p.read_text().strip()
-        temp = round(int(temp_str) / 1000, 1)
+        temp = '{"temperature": ' + round(int(temp_str) / 1000, 1) + '}'
         topic = 'home/temperature/' + sensors_heatpump[sensor]
         client.publish(topic, temp)
 

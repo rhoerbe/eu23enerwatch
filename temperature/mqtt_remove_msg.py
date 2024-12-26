@@ -7,11 +7,11 @@ state_topic = "home/temperature"
 discovery_topic = "homeassistant/sensor/"
 
 sensors_heatpump = (
-    't04-Holzofen_Ruecklauf',
+    't04-Holzofen_Rücklauf',
     't06-Boiler-oben',
     't07-Puffer-oben',
     't09-FBH-Vorlauf',
-    't10-FBH-Ruecklauf',
+    't10-FBH-Rücklauf',
 )
 sensors_air = (
     't01-Keller-Abluft',
