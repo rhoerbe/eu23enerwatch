@@ -1,3 +1,4 @@
+import argparse
 from pathlib import Path
 import paho.mqtt.client as mqtt
 
@@ -29,6 +30,9 @@ sensory_unused = {
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Get W1 values and sent MQTT messages with these values.")
+    parser.add_argument("-v", "--verbose", help="Increase output verbosity", action="store_true")
+    args = parser.parse_args()
     client = mqtt.Client(client_id="cloudberry")
     client.username_pw_set("mqtt", "Crsm7.pvbwb9")
     client.connect(broker_addr, broker_port, 60)
@@ -43,6 +47,13 @@ def main():
         temp_str = p.read_text().strip()
         temp = '{"temperature": ' + str(round(int(temp_str) / 1000, 1)) + '}'
         topic = 'home/temperature/' + sensors_heatpump[sensor]
+        try:
+            topic = 'home/temperature/' + sensors_heatpump[sensor]
+        except KeyError:
+            print(f"Sensor {sensor} not found, no message sent")
+            continue
+        if args.verbose:
+            print(topic + "   " + temp)
         client.publish(topic, temp)
 
 
