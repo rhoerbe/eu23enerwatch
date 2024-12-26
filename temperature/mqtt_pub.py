@@ -30,19 +30,7 @@ sensory_unused = {
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Get W1 values and sent MQTT messages with these values.")
-    parser.add_argument("-v", "--verbose", help="Increase output verbosity", action="store_true")
-    args = parser.parse_args()
-    client = mqtt.Client(client_id="cloudberry")
-    client.username_pw_set("mqtt", "Crsm7.pvbwb9")
-    client.connect(broker_addr, broker_port, 60)
-    for sensor in sensors_heatpump.keys():
-        p = sensor_root_path / sensor / 'temperature'
-        temp_str = p.read_text().strip()
-        temp = round(int(temp_str) / 1000, 1)
-        topic = 'home/temperature/' + sensors_heatpump[sensor]
-        client.publish(topic, temp)
-    for sensor in sensors_ventilation.keys():
+    def write_mqtt():
         p = sensor_root_path / sensor / 'temperature'
         temp_str = p.read_text().strip()
         temp = '{"temperature": ' + str(round(int(temp_str) / 1000, 1)) + '}'
@@ -56,6 +44,16 @@ def main():
             print(topic + "   " + temp)
         client.publish(topic, temp)
 
+    parser = argparse.ArgumentParser(description="Get W1 values and sent MQTT messages with these values.")
+    parser.add_argument("-v", "--verbose", help="Increase output verbosity", action="store_true")
+    args = parser.parse_args()
+    client = mqtt.Client(client_id="cloudberry")
+    client.username_pw_set("mqtt", "Crsm7.pvbwb9")
+    client.connect(broker_addr, broker_port, 60)
+    for sensor in sensors_heatpump.keys():
+        write_mqtt()
+    for sensor in sensors_ventilation.keys():
+        write_mqtt()
 
 if __name__ == '__main__':
     main()
