@@ -10,6 +10,8 @@ state_topic = "home/temperature"
 discovery_template = {
     "name": "placeholder sensor_id",
     "state_topic": "placeholder state_topic",
+    "state_class": "measurement",
+    "device_class": "temperature",
     "unit_of_measurement": "°C",
     "value_template": "{{ value_json.temperature }}",
     "unique_id": "placeholder sensor_id",
@@ -52,7 +54,7 @@ def main():
         message["unique_id"] = "id_" + sensor
         message["device"]["identifiers"] = ["heatpump_temperatures"]
         message["device"]["name"] = "heatpump_temperatures"
-        client.publish("homeassistant/sensor/" + sensor + "/config", json.dumps(message), retain=False)
+        client.publish("homeassistant/sensor/" + sensor + "/config", json.dumps(message), retain=True)
 
 
 if __name__ == '__main__':
