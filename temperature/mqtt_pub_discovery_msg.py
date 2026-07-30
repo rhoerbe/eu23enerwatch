@@ -9,12 +9,13 @@ state_topic = "home/temperature"
 # Discovery message
 discovery_template = {
     "name": "placeholder sensor_id",
-    "state_topic": "placeholder state_topic",
+    "object_id": "",
+    "state_topic": "",
     "state_class": "measurement",
     "device_class": "temperature",
     "unit_of_measurement": "°C",
     "value_template": "{{ value_json.temperature }}",
-    "unique_id": "placeholder sensor_id",
+    "unique_id": "",
     "device": {
         "identifiers": "placeholder [device_id]",
         "name": "placeholder device_id",
@@ -50,6 +51,7 @@ def main():
     for sensor in (sensors_heatpump + sensors_air):
         message = discovery_template.copy()
         message["name"] = sensor
+        message["object_id"] = "temperature_" + sensor
         message["state_topic"] = state_topic + "/" + sensor
         message["unique_id"] = "id_" + sensor
         message["device"]["identifiers"] = ["heatpump_temperatures"]
